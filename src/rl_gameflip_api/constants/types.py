@@ -1,0 +1,18 @@
+DECAL = 'decal'
+BANNER = 'banner'
+TOPPER = 'topper'
+AVATAR_BORDER = 'avatar-border'
+PAINT_FINISH = 'paint-finish'
+BOOST = 'boost'
+TRAIL = 'trail'
+BODY = 'body'
+BLUEPRINT = 'blueprint'
+GOAL_EXPLOSION = 'goal'
+ENGINE_AUDIO = 'engine-audio'
+CREDIT = 'credit'
+CRATE = 'crate'
+CUSTOM = 'custom'
+WHEEL = 'wheel'
+ANTENNA = 'antenna'
+TYPES = [DECAL, BANNER, TOPPER, AVATAR_BORDER, PAINT_FINISH, BOOST, TRAIL, BODY, BLUEPRINT, GOAL_EXPLOSION,
+         ENGINE_AUDIO, CREDIT, CRATE, CUSTOM, WHEEL, ANTENNA]
