@@ -1,0 +1,17 @@
+ACROBAT = "Acrobat"
+AVIATOR = "Aviator"
+GOALKEEPER = "Goalkeeper"
+GUARDIAN = "Guardian"
+JUGGLER = "Juggler"
+PARAGON = "Paragon"
+PLAYMAKER = "Playmaker"
+SCORER = "Scorer"
+SHOW_OFF = "Show Off"
+SNIPER = "Sniper"
+STRIKER = "Striker"
+SWEEPER = "Sweeper"
+TACTICIAN = "Tactician"
+TURTLE = "Turtle"
+VICTOR = "Victor"
+CERTIFICATES = [ACROBAT, AVIATOR, GOALKEEPER, GUARDIAN, JUGGLER, PARAGON, PLAYMAKER, SCORER, SHOW_OFF, SNIPER, STRIKER,
+                SWEEPER, TACTICIAN, TURTLE, VICTOR]
