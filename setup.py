@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="gameflip-api",
-    version="0.0.1",
+    name="rocket-league-gameflip-api",
+    version="0.0.2",
     author="gustavopedrosob",
     author_email="thevicio27@gmail.com",
     description="A Python Rocket League Gameflip API",
