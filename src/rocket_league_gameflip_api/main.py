@@ -50,7 +50,7 @@ def save_image(url: str, path: str):
 class Item(rl_utils.IdentityItem):
     def __init__(self, id_: str, name: str, rarity: str, platform: str, icon: str, slot: str, icon_url: str,
                  customizable: typing.Optional[bool] = None, unit: typing.Optional[str] = None,
-                 color: typing.Optional[str] = None):
+                 color: str = rl_utils.DEFAULT):
         self.id = id_
         self.platform = platform
         self.icon = icon
