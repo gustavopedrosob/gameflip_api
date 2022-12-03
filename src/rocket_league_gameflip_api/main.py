@@ -85,9 +85,8 @@ class RocketLeagueGameflipAPI:
                     items.append(Item(item["id"], item["name"], item["rarity"], item["platform"], color["icon"],
                                       item["type"], color["icon_url"], item.get("customizable"), item.get("unit"),
                                       color["name"]))
-            else:
-                items.append(Item(item["id"], item["name"], item["rarity"], item["platform"], item["icon"],
-                                  item["type"], item["icon_url"], item.get("customizable"), item.get("unit")))
+            items.append(Item(item["id"], item["name"], item["rarity"], item["platform"], item["icon"],
+                              item["type"], item["icon_url"], item.get("customizable"), item.get("unit")))
         return items
 
     @staticmethod
@@ -128,7 +127,7 @@ class RocketLeagueGameflipAPI:
         similar_item = self.get_similar_item(item)
         save_image(f"https://gameflip.com/{similar_item.icon_url}", path)
 
-    def download_item_image_by_name_and_color(self, name: str, folder: str, color: typing.Optional[str] = None,
+    def download_item_image_by_name_and_color(self, name: str, folder: str, color: str = rl_utils.DEFAULT,
                                               format_: typing.Literal["png", "jpg"] = "png"):
         icon_url, file_name = self._gen_icon_url_and_file_name(name, color)
         url = f"https://gameflip.com/img/items/rocket-league/{icon_url}.{format_}"
@@ -139,15 +138,15 @@ class RocketLeagueGameflipAPI:
         similar_item = self.get_similar_item(item)
         return get_image(f"https://gameflip.com/{similar_item.icon_url}")
 
-    def get_item_image_by_name_and_color(self, name: str, color: typing.Optional[str],
+    def get_item_image_by_name_and_color(self, name: str, color: str = rl_utils.DEFAULT,
                                          format_: typing.Literal["png", "jpg"] = "png"):
         icon_url, file_name = self._gen_icon_url_and_file_name(name, color)
         url = f"https://gameflip.com/img/items/rocket-league/{icon_url}.{format_}"
         return get_image(url)
 
-    def _gen_icon_url_and_file_name(self, name: str, color: typing.Optional[str] = None) -> typing.Tuple[str, str]:
+    def _gen_icon_url_and_file_name(self, name: str, color: str = rl_utils.DEFAULT) -> typing.Tuple[str, str]:
         formatted_name = self._format_name(name)
-        if color is not None:
+        if not rl_utils.color_utils.is_exactly(rl_utils.DEFAULT, color):
             color = rl_utils.color_utils.get_repr(color)
             formatted_color = color.replace(" ", "")
             return f"{formatted_name}/{formatted_name}-{formatted_color}", f"{formatted_name}-{formatted_color}"
