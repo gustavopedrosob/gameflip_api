@@ -138,14 +138,16 @@ class RocketLeagueGameflipAPI:
         similar_item = self.get_similar_item(item)
         return get_image(f"https://gameflip.com/{similar_item.icon_url}")
 
-    def get_item_image_by_name_and_color(self, name: str, color: str = rl_utils.DEFAULT,
+    @staticmethod
+    def get_item_image_by_name_and_color(name: str, color: str = rl_utils.DEFAULT,
                                          format_: typing.Literal["png", "jpg"] = "png"):
-        icon_url, file_name = self._gen_icon_url_and_file_name(name, color)
+        icon_url, file_name = RocketLeagueGameflipAPI._gen_icon_url_and_file_name(name, color)
         url = f"https://gameflip.com/img/items/rocket-league/{icon_url}.{format_}"
         return get_image(url)
 
-    def _gen_icon_url_and_file_name(self, name: str, color: str = rl_utils.DEFAULT) -> typing.Tuple[str, str]:
-        formatted_name = self._format_name(name)
+    @staticmethod
+    def _gen_icon_url_and_file_name(name: str, color: str = rl_utils.DEFAULT) -> typing.Tuple[str, str]:
+        formatted_name = RocketLeagueGameflipAPI._format_name(name)
         if not rl_utils.color_utils.is_exactly(rl_utils.DEFAULT, color):
             color = rl_utils.color_utils.get_repr(color)
             formatted_color = color.replace(" ", "")
