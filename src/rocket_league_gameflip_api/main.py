@@ -7,26 +7,8 @@ import shutil
 import typing
 import re
 import unidecode
+import rocket_league_utils as rl_utils
 from PIL import Image
-import rocket_league_utils.main as rl_utils
-
-SEVEN = 7
-FOURTEEN = 14
-THIRTY = 30
-FORTY_FIVE = 45
-NINETY = 90
-ONE_HUNDRED_AND_EIGHTY = 180
-EXPIRE_IN_DAYS = [SEVEN, FOURTEEN, THIRTY, FORTY_FIVE, NINETY, ONE_HUNDRED_AND_EIGHTY]
-
-ONE = 1
-TWO = 2
-THREE = 3
-SHIPPING_WITHIN_DAYS = [ONE, TWO, THREE]
-
-DRAFT = "draft"
-READY = "ready"
-ON_SALE = "onsale"
-VISIBILITY = [DRAFT, READY, ON_SALE]
 
 
 def get_image(url: str):
