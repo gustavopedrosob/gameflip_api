@@ -1,32 +1,10 @@
 import subprocess
 import os
 import requests
-import tempfile
-import io
-import shutil
 import typing
 import re
 import unidecode
 import rocket_league_utils as rl_utils
-from PIL import Image
-
-
-def get_image(url: str):
-    buffer = tempfile.SpooledTemporaryFile(max_size=1000000000)
-    request = requests.get(url, stream=True)
-    downloaded = 0
-    for chunk in request.iter_content(chunk_size=1024):
-        downloaded += len(chunk)
-        buffer.write(chunk)
-    buffer.seek(0)
-    return Image.open(io.BytesIO(buffer.read()))
-
-
-def save_image(url: str, path: str):
-    request = requests.get(url, stream=True)
-    with open(path, 'wb') as file:
-        request.raw.decode_content = True
-        shutil.copyfileobj(request.raw, file)
 
 
 class Item(rl_utils.IdentityItem):
@@ -105,42 +83,18 @@ class RocketLeagueGameflipAPI:
                 return item_
         raise NoSimilarItem()
 
-    def download_item_image(self, item: rl_utils.BaseItem, path: str):
-        similar_item = self.get_similar_item(item)
-        save_image(f"https://gameflip.com/{similar_item.icon_url}", path)
-
-    def get_item_image(self, item: rl_utils.BaseItem) -> Image:
-        similar_item = self.get_similar_item(item)
-        return get_image(f"https://gameflip.com/{similar_item.icon_url}")
-
     @staticmethod
-    def download_item_image_by_name_and_color(name: str, folder: str, color: str = rl_utils.DEFAULT,
-                                              format_: typing.Literal["png", "jpg"] = "png"):
-        icon_url, file_name = RocketLeagueGameflipAPI._gen_icon_url_and_file_name(name, color)
-        url = f"https://gameflip.com/img/items/rocket-league/{icon_url}.{format_}"
-        path = f"{folder}/{file_name}.{format_}"
-        save_image(url, path)
-
-    @staticmethod
-    def get_item_image_by_name_and_color(name: str, color: str = rl_utils.DEFAULT,
-                                         format_: typing.Literal["png", "jpg"] = "png"):
-        icon_url, file_name = RocketLeagueGameflipAPI._gen_icon_url_and_file_name(name, color)
-        url = f"https://gameflip.com/img/items/rocket-league/{icon_url}.{format_}"
-        return get_image(url)
-
-    @staticmethod
-    def _gen_icon_url_and_file_name(name: str, color: str = rl_utils.DEFAULT) -> typing.Tuple[str, str]:
-        formatted_name = RocketLeagueGameflipAPI._format_name(name)
-        if not rl_utils.color_utils.is_exactly(rl_utils.DEFAULT, color):
-            color = rl_utils.color_utils.get_repr(color)
-            formatted_color = color.replace(" ", "")
-            return f"{formatted_name}/{formatted_name}-{formatted_color}", f"{formatted_name}-{formatted_color}"
-        return formatted_name, formatted_name
-
-    @staticmethod
-    def _format_name(name: str) -> str:
+    def get_icon_url(name: str, color: str = rl_utils.DEFAULT, format_: typing.Literal["png", "jpg"] = "png") -> str:
         name = rl_utils.Name(name)
         formatted_name = unidecode.unidecode(re.sub("[ -]", "_", name.name).lower())
-        if name.kind is not None:
-            return f"{formatted_name}_{name.kind.lower()}"
-        return formatted_name
+        if name.kind is None:
+            formatted_name = formatted_name
+        else:
+            formatted_name = f"{formatted_name}_{name.kind.lower()}"
+        if rl_utils.color_utils.is_exactly(rl_utils.DEFAULT, color):
+            url_end = formatted_name
+        else:
+            color = rl_utils.color_utils.get_repr(color)
+            formatted_color = color.replace(" ", "")
+            url_end = f"{formatted_name}/{formatted_name}-{formatted_color}.{format_}"
+        return f"https://gameflip.com/img/items/rocket-league/{url_end}"
