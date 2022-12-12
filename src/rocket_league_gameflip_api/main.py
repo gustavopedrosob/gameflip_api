@@ -7,25 +7,25 @@ import unidecode
 import rocket_league_utils as rl_utils
 
 
-class Item(rl_utils.IdentityItem):
+class Item(rl_utils.ReprItem, rl_utils.IdentityItem):
     def __init__(self, id_: str, name: str, rarity: str, platform: str, icon: str, slot: str, icon_url: str,
                  customizable: typing.Optional[bool] = None, unit: typing.Optional[str] = None,
-                 color: str = rl_utils.DEFAULT):
+                 color: str = rl_utils.DEFAULT, blueprint: bool = False):
         self.id = id_
         self.platform = platform
         self.icon = icon
         self.customizable = customizable
         self.unit = unit
         self.icon_url = icon_url
-        self.color = color
-        super().__init__(name, rarity, slot)
+        rl_utils.ReprItem.__init__(self, name, slot, blueprint, color)
+        rl_utils.IdentityItem.__init__(self, name, rarity, slot)
 
 
 class RocketLeagueGameflipAPIException(Exception):
     pass
 
 
-class NoSimilarItem(RocketLeagueGameflipAPIException):
+class ItemNotFound(RocketLeagueGameflipAPIException):
     pass
 
 
@@ -72,19 +72,26 @@ class RocketLeagueGameflipAPI:
                                    visibility: typing.Literal["draft", "onsale", "ready"] = "onsale",
                                    quantity: int = 1, shipping_within_days: typing.Literal[1, 2, 3] = 1,
                                    expire_in_days: typing.Literal[7, 14, 30, 45, 90, 180] = 30):
-        similar_item = self.get_similar_item(item)
-        self.rocket_league_listing(description, item.slot, similar_item.name, similar_item.id, item.color,
-                                   item.certified, price, visibility, quantity, similar_item.icon_url,
+        repr_item = self.get_repr_item(item)
+        self.rocket_league_listing(description, item.slot, repr_item.name, repr_item.id, item.color,
+                                   item.certified, price, visibility, quantity, repr_item.icon_url,
                                    shipping_within_days, expire_in_days)
 
-    def get_similar_item(self, item: rl_utils.BaseItem) -> Item:
+    def get_repr_item(self, item: rl_utils.ReprItem) -> Item:
         for item_ in self.items:
-            if item.compare_identity(item_) and rl_utils.color_utils.compare(item_.color, item.color):
+            if item.compare_repr(item_):
                 return item_
-        raise NoSimilarItem()
+        raise ItemNotFound()
 
     @staticmethod
-    def get_icon_url(name: str, color: str = rl_utils.DEFAULT, format_: typing.Literal["png", "jpg"] = "png") -> str:
+    def gen_icon_url(name: str, color: str = rl_utils.DEFAULT, format_: typing.Literal["png", "jpg"] = "png") -> str:
+        """
+        Generates an icon url by formatting string and using logic
+        :param name: Item's name
+        :param color: Item's color
+        :param format_: Item photo url
+        :return: An item photo url at gameflip website.
+        """
         name = rl_utils.Name(name)
         formatted_name = unidecode.unidecode(re.sub("[ -]", "_", name.name).lower())
         if name.kind is None:
@@ -96,5 +103,5 @@ class RocketLeagueGameflipAPI:
         else:
             color = rl_utils.color_utils.get_repr(color)
             formatted_color = color.replace(" ", "")
-            url_end = f"{formatted_name}/{formatted_name}-{formatted_color}.{format_}"
-        return f"https://gameflip.com/img/items/rocket-league/{url_end}"
+            url_end = f"{formatted_name}/{formatted_name}-{formatted_color}"
+        return f"https://gameflip.com/img/items/rocket-league/{url_end}.{format_}"
