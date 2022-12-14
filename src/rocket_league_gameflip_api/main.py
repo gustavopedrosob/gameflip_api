@@ -20,6 +20,9 @@ class Item(rl_utils.ReprItem, rl_utils.IdentityItem):
         rl_utils.ReprItem.__init__(self, name, slot, blueprint, color)
         rl_utils.IdentityItem.__init__(self, name, rarity, slot)
 
+    def get_full_icon_url(self):
+        return f"https://gameflip.com/img/items/rocket-league/{self.icon}"
+
 
 class RocketLeagueGameflipAPIException(Exception):
     pass
