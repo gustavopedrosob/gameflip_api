@@ -18,6 +18,7 @@ setup(
     ],
     package_dir={"": "src"},
     packages=["rocket_league_gameflip_api"],
-    install_requires=["requests", "unidecode", "git+https://github.com/gustavopedrosob/rocket_league_utils"],
+    install_requires=["requests", "unidecode",
+                      "rocket_league_utils @ git+https://github.com/gustavopedrosob/rocket_league_utils"],
     python_requires=">=3.6"
 )
