@@ -6,6 +6,7 @@ import re
 import unidecode
 import rocket_league_utils as rl_utils
 from rocket_league_utils import color_utils, slot_utils
+from rocket_league_gameflip_api import constants
 
 
 class DataItem(rl_utils.DataItem):
@@ -72,7 +73,7 @@ class RocketLeagueGameflipAPI:
             color: str = "",
             certified: str = "",
             price: int = 75,
-            visibility: typing.Literal["draft", "onsale", "ready"] = "onsale",
+            visibility: typing.Literal["draft", "onsale", "ready"] = constants.ON_SALE,
             quantity: int = 1,
             photo_url: str = "",
             shipping_within_days: typing.Literal[1, 2, 3] = 1,
