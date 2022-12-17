@@ -5,23 +5,36 @@ import typing
 import re
 import unidecode
 import rocket_league_utils as rl_utils
+from rocket_league_utils import color_utils
 
 
-class Item(rl_utils.ReprItem, rl_utils.IdentityItem):
-    def __init__(self, id_: str, name: str, rarity: str, platform: str, icon: str, slot: str, icon_url: str,
-                 customizable: typing.Optional[bool] = None, unit: typing.Optional[str] = None,
-                 color: str = rl_utils.DEFAULT, blueprint: bool = False):
+class DataItem(rl_utils.DataItem):
+    def __init__(self, id_: str, name: str, rarity: str, platforms: typing.Tuple[str, ...], icon: str, slot: str,
+                 customizable: typing.Optional[bool], unit: typing.Optional[str]):
         self.id = id_
-        self.platform = platform
         self.icon = icon
         self.customizable = customizable
         self.unit = unit
-        self.icon_url = icon_url
-        rl_utils.ReprItem.__init__(self, name, slot, blueprint, color)
-        rl_utils.IdentityItem.__init__(self, name, rarity, slot)
+        super().__init__(name, rarity, slot, platforms=platforms)
 
-    def get_full_icon_url(self):
-        return f"https://gameflip.com/img/items/rocket-league/{self.icon}"
+    @staticmethod
+    def get_full_icon_url(icon: str) -> str:
+        return f"https://gameflip.com/img/items/rocket-league/{icon}"
+
+    @staticmethod
+    def get_icon_url(icon: str) -> str:
+        return f"/img/items/rocket-league/{icon}"
+
+
+class ColorfulDataItem(DataItem):
+    def __init__(self, id_: str, name: str, rarity: str, platforms: typing.Tuple[str, ...], icon: str, slot: str,
+                 customizable: typing.Optional[bool], unit: typing.Optional[str], colors: typing.Dict[str, str]):
+        self.colors = colors
+        super().__init__(id_, name, rarity, platforms, icon, slot, customizable, unit)
+
+    def get_icon_by_color(self, color: str) -> str:
+        color = color_utils.get_repr(color)
+        return self.colors[color]
 
 
 class RocketLeagueGameflipAPIException(Exception):
@@ -34,22 +47,24 @@ class ItemNotFound(RocketLeagueGameflipAPIException):
 
 class RocketLeagueGameflipAPI:
     def __init__(self):
-        self.items = self.get_items_data()
+        self.data_items = self.get_data_items()
 
     @staticmethod
-    def get_items_data() -> typing.List[Item]:
+    def get_data_items() -> typing.List[DataItem]:
         response = requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
         content = response.json()
         data = content["data"]
         items = []
         for item in data:
+            platform = item["platform"]
+            platforms = rl_utils.PLATFORMS if platform == "all" else (platform,)
             if "colors" in item:
-                for color in item["colors"]:
-                    items.append(Item(item["id"], item["name"], item["rarity"], item["platform"], color["icon"],
-                                      item["type"], color["icon_url"], item.get("customizable"), item.get("unit"),
-                                      color["name"]))
-            items.append(Item(item["id"], item["name"], item["rarity"], item["platform"], item["icon"],
-                              item["type"], item["icon_url"], item.get("customizable"), item.get("unit")))
+                colors = {color["name"]: color["icon"] for color in item["colors"]}
+                items.append(ColorfulDataItem(item["id"], item["name"], item["rarity"], platforms, item["icon"],
+                                              item["type"], item.get("customizable"), item.get("unit"), colors))
+            else:
+                items.append(DataItem(item["id"], item["name"], item["rarity"], platforms, item["icon"],
+                                      item["type"], item.get("customizable"), item.get("unit")))
         return items
 
     @staticmethod
@@ -75,14 +90,14 @@ class RocketLeagueGameflipAPI:
                                    visibility: typing.Literal["draft", "onsale", "ready"] = "onsale",
                                    quantity: int = 1, shipping_within_days: typing.Literal[1, 2, 3] = 1,
                                    expire_in_days: typing.Literal[7, 14, 30, 45, 90, 180] = 30):
-        repr_item = self.get_repr_item(item)
-        self.rocket_league_listing(description, item.slot, repr_item.name, repr_item.id, item.color,
-                                   item.certified, price, visibility, quantity, repr_item.icon_url,
+        item_data = self.get_item_data(item)
+        self.rocket_league_listing(description, item.slot, item_data.name, item_data.id, item.color,
+                                   item.certified, price, visibility, quantity, item_data.get_icon_url(item_data.icon),
                                    shipping_within_days, expire_in_days)
 
-    def get_repr_item(self, item: rl_utils.ReprItem) -> Item:
-        for item_ in self.items:
-            if item.compare_repr(item_):
+    def get_item_data(self, item: rl_utils.IdentityItem) -> DataItem:
+        for item_ in self.data_items:
+            if item.compare_identity(item_):
                 return item_
         raise ItemNotFound()
 
@@ -95,16 +110,14 @@ class RocketLeagueGameflipAPI:
         :param format_: Item photo url
         :return: An item photo url at gameflip website.
         """
-        name = rl_utils.Name(name)
+        name = rl_utils.identify_name(name)
         formatted_name = unidecode.unidecode(re.sub("[ -]", "_", name.name).lower())
-        if name.kind is None:
-            formatted_name = formatted_name
-        else:
-            formatted_name = f"{formatted_name}_{name.kind.lower()}"
-        if rl_utils.color_utils.is_exactly(rl_utils.DEFAULT, color):
+        if isinstance(name, rl_utils.NameWithKind):
+            formatted_name = f"{formatted_name}_{name.complement.lower()}"
+        if color_utils.is_exactly(rl_utils.DEFAULT, color):
             url_end = formatted_name
         else:
-            color = rl_utils.color_utils.get_repr(color)
+            color = color_utils.get_repr(color)
             formatted_color = color.replace(" ", "")
             url_end = f"{formatted_name}/{formatted_name}-{formatted_color}"
         return f"https://gameflip.com/img/items/rocket-league/{url_end}.{format_}"
