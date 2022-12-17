@@ -90,12 +90,12 @@ class RocketLeagueGameflipAPI:
                                    visibility: typing.Literal["draft", "onsale", "ready"] = "onsale",
                                    quantity: int = 1, shipping_within_days: typing.Literal[1, 2, 3] = 1,
                                    expire_in_days: typing.Literal[7, 14, 30, 45, 90, 180] = 30):
-        item_data = self.get_item_data(item)
+        item_data = self.get_data_item(item)
         self.rocket_league_listing(description, item.slot, item_data.name, item_data.id, item.color,
                                    item.certified, price, visibility, quantity, item_data.get_icon_url(item_data.icon),
                                    shipping_within_days, expire_in_days)
 
-    def get_item_data(self, item: rl_utils.IdentityItem) -> DataItem:
+    def get_data_item(self, item: rl_utils.IdentityItem) -> DataItem:
         for item_ in self.data_items:
             if item.compare_identity(item_):
                 return item_
