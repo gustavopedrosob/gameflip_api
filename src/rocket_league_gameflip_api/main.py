@@ -41,10 +41,6 @@ class RocketLeagueGameflipAPIException(Exception):
     pass
 
 
-class ItemNotFound(RocketLeagueGameflipAPIException):
-    pass
-
-
 class RocketLeagueGameflipAPI:
     def __init__(self):
         self.data_items = self.get_data_items()
