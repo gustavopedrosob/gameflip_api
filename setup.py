@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="rocket-league-gameflip-api",
-    version="0.0.3",
+    version="0.0.4",
     author="gustavopedrosob",
     author_email="thevicio27@gmail.com",
     description="A Python Rocket League Gameflip API",
