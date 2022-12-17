@@ -5,17 +5,17 @@ import typing
 import re
 import unidecode
 import rocket_league_utils as rl_utils
-from rocket_league_utils import color_utils
+from rocket_league_utils import color_utils, slot_utils
 
 
 class DataItem(rl_utils.DataItem):
     def __init__(self, id_: str, name: str, rarity: str, platforms: typing.Tuple[str, ...], icon: str, slot: str,
-                 customizable: typing.Optional[bool], unit: typing.Optional[str]):
+                 customizable: typing.Optional[bool], unit: typing.Optional[str], colors: typing.Iterable[str] = None):
         self.id = id_
         self.icon = icon
         self.customizable = customizable
         self.unit = unit
-        super().__init__(name, rarity, slot, platforms=platforms)
+        super().__init__(name, slot, rarity, platforms=platforms, colors=colors)
 
     @staticmethod
     def get_full_icon_url(icon: str) -> str:
@@ -28,13 +28,13 @@ class DataItem(rl_utils.DataItem):
 
 class ColorfulDataItem(DataItem):
     def __init__(self, id_: str, name: str, rarity: str, platforms: typing.Tuple[str, ...], icon: str, slot: str,
-                 customizable: typing.Optional[bool], unit: typing.Optional[str], colors: typing.Dict[str, str]):
-        self.colors = colors
-        super().__init__(id_, name, rarity, platforms, icon, slot, customizable, unit)
+                 customizable: typing.Optional[bool], unit: typing.Optional[str], icons_table: typing.Dict[str, str]):
+        self.icons_table = icons_table
+        super().__init__(id_, name, rarity, platforms, icon, slot, customizable, unit, icons_table.keys())
 
-    def get_icon_by_color(self, color: str) -> str:
+    def get_icon_by_color(self, color: str) -> typing.Optional[str]:
         color = color_utils.get_repr(color)
-        return self.colors[color]
+        return self.icons_table.get(color)
 
 
 class RocketLeagueGameflipAPIException(Exception):
@@ -95,11 +95,12 @@ class RocketLeagueGameflipAPI:
                                    item.certified, price, visibility, quantity, item_data.get_icon_url(item_data.icon),
                                    shipping_within_days, expire_in_days)
 
-    def get_data_item(self, item: rl_utils.IdentityItem) -> typing.Union[DataItem, ColorfulDataItem]:
-        for item_ in self.data_items:
-            if item.compare_identity(item_):
-                return item_
-        raise ItemNotFound()
+    def get_data_item(self, item: rl_utils.ReprItem) -> typing.Union[DataItem, ColorfulDataItem]:
+        for data_item in self.data_items:
+            if rl_utils.compare_names(item.name, data_item.name) and slot_utils.compare(item.slot, data_item.slot) and \
+                    data_item.can_match(item):
+                return data_item
+        raise rl_utils.ItemNotFound()
 
     @staticmethod
     def gen_icon_url(name: str, color: str = rl_utils.DEFAULT, format_: typing.Literal["png", "jpg"] = "png") -> str:
