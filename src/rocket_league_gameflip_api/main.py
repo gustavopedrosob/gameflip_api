@@ -95,7 +95,7 @@ class RocketLeagueGameflipAPI:
                                    item.certified, price, visibility, quantity, item_data.get_icon_url(item_data.icon),
                                    shipping_within_days, expire_in_days)
 
-    def get_data_item(self, item: rl_utils.IdentityItem) -> DataItem:
+    def get_data_item(self, item: rl_utils.IdentityItem) -> typing.Union[DataItem, ColorfulDataItem]:
         for item_ in self.data_items:
             if item.compare_identity(item_):
                 return item_
