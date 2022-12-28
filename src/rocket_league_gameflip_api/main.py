@@ -31,7 +31,8 @@ class ColorfulDataItem(DataItem):
     def __init__(self, id_: str, name: str, rarity: str, platforms: typing.Tuple[str, ...], icon: str, slot: str,
                  customizable: typing.Optional[bool], unit: typing.Optional[str], icons_table: typing.Dict[str, str]):
         self.icons_table = icons_table
-        super().__init__(id_, name, rarity, platforms, icon, slot, customizable, unit, icons_table.keys())
+        colors = tuple(icons_table.keys()) + (rl_utils.DEFAULT, )
+        super().__init__(id_, name, rarity, platforms, icon, slot, customizable, unit, colors)
 
     def get_icon_by_color(self, color: str) -> typing.Optional[str]:
         color = color_utils.get_repr(color)
