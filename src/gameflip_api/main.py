@@ -2,6 +2,7 @@ import datetime
 import typing
 import requests
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus
+import pyotp
 
 
 class PriceRange:
@@ -31,6 +32,19 @@ class DateRange:
 
 
 class GameflipAPI:
+    __api = 'https://production-gameflip.fingershock.com/api/v1'
+
+
+    def __init__(self, api_key: str, secret: str) -> None:
+        self.__api_key = api_key
+        self.__secret = secret
+        self.__totp = pyotp.TOTP(secret)
+
+    def profile(self, id_: str = 'me'):
+        headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
+        response = requests.get(f"{self.__api}/account/{id_}/profile", headers=headers)
+        return response.json()
+
     @staticmethod
     def get_rldata_items() -> dict:
         response = requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
