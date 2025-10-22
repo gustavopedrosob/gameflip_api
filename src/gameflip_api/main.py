@@ -36,22 +36,34 @@ class GameflipAPI:
 
 
     def __init__(self, api_key: str, secret: str) -> None:
+        if not api_key:
+            raise ValueError("API key is required.")
+        if not secret:
+            raise ValueError("Secret is required.")
         self.__api_key = api_key
         self.__secret = secret
         self.__totp = pyotp.TOTP(secret)
 
-    def profile(self, id_: str = 'me'):
+    def profile(self, id_: str = 'me') -> requests.Response:
+        if not id_:
+            raise ValueError("Id is required.")
         headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
         response = requests.get(f"{self.__api}/account/{id_}/profile", headers=headers)
-        return response.json()
+        return response
+
+    def wallet_history(self) -> requests.Response:
+        headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
+        response = requests.get(f"{self.__api}/account/me/wallet_history", headers=headers)
+        return response
 
     @staticmethod
-    def get_rldata_items() -> dict:
+    def get_rldata_items() -> requests.Response:
         response = requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
-        return response.json()
+        return response
 
-    @staticmethod
+    @classmethod
     def listing(
+            cls,
             term: typing.Optional[str] = None,
             category: typing.Optional[Category] = None,
             platform: typing.Optional[Platform] = None,
@@ -70,7 +82,7 @@ class GameflipAPI:
             seller_online_until: typing.Optional[datetime.datetime] = None,
             tags: typing.Optional[str] = None,
             start: typing.Optional[int] = None
-    ) -> dict:
+    ) -> requests.Response:
         """Makes a get to /api/v1/listing
 
         Args:
@@ -119,5 +131,5 @@ class GameflipAPI:
             params["seller_online_until"] = seller_online_until.isoformat(timespec='milliseconds') + "Z"
         if tags is not None: params["tags"] = tags
         if start is not None: params["start"] = start
-        response = requests.get("https://production-gameflip.fingershock.com/api/v1/listing", params)
-        return response.json()
+        response = requests.get(f"{cls.__api}/listing", params)
+        return response
