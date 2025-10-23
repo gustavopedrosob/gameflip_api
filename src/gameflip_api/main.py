@@ -46,22 +46,42 @@ class GameflipAPI:
 
 
     def __init__(self, api_key: str, secret: str) -> None:
+        """
+        Generates the totp to get authorization for requests.
+        :param api_key: API Key is located at developer tab on your profile.
+        :param secret: The secret is generated on API Key creation.
+        """
         GameflipAPIParams(api_key=api_key, secret=secret)
         self.__api_key = api_key
         self.__secret = secret
         self.__totp = pyotp.TOTP(secret)
 
     def profile(self, id_: str = 'me') -> requests.Response:
+        """
+        Makes a request to the gameflip API to fetch user profile information, which you can get your own information.
+        :param id_: The id is on the url of any profile, it usually starts with 'us-east' and ends with a bunt of numbers.
+        To fetch data from your own profile you can set the id with 'me'.
+        :raise pydantic.error_wrappers.ValidationError: If id_ is empty or not a string.
+        :return: requests.Response
+        """
         IdParam(id_=id_)
         headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
         return requests.get(f"{self.__api}/account/{id_}/profile", headers=headers)
 
     def wallet_history(self) -> requests.Response:
+        """
+        Makes a request to the gameflip API to fetch your wallet history.
+        :return: requests.Response
+        """
         headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
         return requests.get(f"{self.__api}/account/me/wallet_history", headers=headers)
 
     @staticmethod
     def get_rldata_items() -> requests.Response:
+        """
+        Makes a request to the gameflip API to fetch Rocket League items data.
+        :return: requests.Response
+        """
         return requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
 
     @classmethod
@@ -138,6 +158,11 @@ class GameflipAPI:
 
     @classmethod
     def listing(cls, id_: str):
+        """
+        Makes a request to the gameflip API to fetch listing information.
+        :param id_: The id is on the url of any listing, it usually made with a bunt of numbers.
+        :raise pydantic.error_wrappers.ValidationError: If id_ is empty or not a string.
+        :return: requests.Response
+        """
         IdParam(id_=id_)
         return requests.get(f"{cls.__api}/listing/{id_}")
-
