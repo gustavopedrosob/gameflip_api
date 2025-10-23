@@ -3,6 +3,16 @@ import typing
 import requests
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus
 import pyotp
+from pydantic import BaseModel, Field
+
+
+class IdParam(BaseModel):
+    id_: str = Field(..., min_length=1, description="Id is required.")
+
+
+class GameflipAPIParams(BaseModel):
+    api_key: str = Field(..., min_length=1, description="API key is required.")
+    secret: str = Field(..., min_length=1, description="Secret is required.")
 
 
 class PriceRange:
@@ -36,33 +46,26 @@ class GameflipAPI:
 
 
     def __init__(self, api_key: str, secret: str) -> None:
-        if not api_key:
-            raise ValueError("API key is required.")
-        if not secret:
-            raise ValueError("Secret is required.")
+        GameflipAPIParams(api_key=api_key, secret=secret)
         self.__api_key = api_key
         self.__secret = secret
         self.__totp = pyotp.TOTP(secret)
 
     def profile(self, id_: str = 'me') -> requests.Response:
-        if not id_:
-            raise ValueError("Id is required.")
+        IdParam(id_=id_)
         headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
-        response = requests.get(f"{self.__api}/account/{id_}/profile", headers=headers)
-        return response
+        return requests.get(f"{self.__api}/account/{id_}/profile", headers=headers)
 
     def wallet_history(self) -> requests.Response:
         headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
-        response = requests.get(f"{self.__api}/account/me/wallet_history", headers=headers)
-        return response
+        return requests.get(f"{self.__api}/account/me/wallet_history", headers=headers)
 
     @staticmethod
     def get_rldata_items() -> requests.Response:
-        response = requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
-        return response
+        return requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
 
     @classmethod
-    def listing(
+    def listings(
             cls,
             term: typing.Optional[str] = None,
             category: typing.Optional[Category] = None,
@@ -131,5 +134,10 @@ class GameflipAPI:
             params["seller_online_until"] = seller_online_until.isoformat(timespec='milliseconds') + "Z"
         if tags is not None: params["tags"] = tags
         if start is not None: params["start"] = start
-        response = requests.get(f"{cls.__api}/listing", params)
-        return response
+        return requests.get(f"{cls.__api}/listing", params)
+
+    @classmethod
+    def listing(cls, id_: str):
+        IdParam(id_=id_)
+        return requests.get(f"{cls.__api}/listing/{id_}")
+
