@@ -109,7 +109,7 @@ class GameflipAPI:
             start: Gets listing by page number
 
         Returns:
-            dict: Returns json listing from site
+            requests.Response: Returns a response object
         """
         params = {}
         if term is not None: params["term"] = term
