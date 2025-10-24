@@ -11,7 +11,7 @@ load_dotenv()
 
 
 def test_listings_success():
-    assert GameflipAPI.listings().status_code == 200
+    assert GameflipAPI.listing_search().status_code == 200
 
 
 def test_my_profile_success():
@@ -40,14 +40,14 @@ def test_profile_id_type_error(value):
 def test_empty_listing_id_error():
     with pytest.raises(ValidationError):
         api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
-        api.listing("")
+        api.listing_of("")
 
 
 @pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
 def test_listing_id_type_error(value):
     with pytest.raises(ValidationError):
         api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
-        api.listing(value)
+        api.listing_of(value)
 
 
 def test_empty_api_key_error():
@@ -73,12 +73,12 @@ def test_secret_type_error(value):
 
 
 def test_any_listing_success():
-    assert GameflipAPI.listing("44e45372-b6f1-4400-af78-419c29243d6c").status_code == 200
+    assert GameflipAPI.listing_of("44e45372-b6f1-4400-af78-419c29243d6c").status_code == 200
 
 
 def test_listings_invalid_price_range_error():
     with pytest.raises(ValidationError):
-        GameflipAPI.listings(price=PriceRange(start=0, end=100))
+        GameflipAPI.listing_search(price=PriceRange(start=0, end=100))
 
 
 @pytest.mark.parametrize(
