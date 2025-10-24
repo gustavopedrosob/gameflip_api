@@ -42,7 +42,7 @@ class DatetimeRange(Range[datetime.datetime]):
         return datetime_.isoformat(timespec='milliseconds') + "Z"
 
 
-class ListingsParams(BaseModel):
+class ListingSearchParams(BaseModel):
     term: typing.Optional[str] = None
     category: typing.Optional[Category] = None
     platform: typing.Optional[Platform] = None
@@ -68,6 +68,15 @@ class ListingsParams(BaseModel):
             if d.get(attr) is not None:
                 d[attr] = str(getattr(self, attr))
         return d
+
+
+class ListingPostParams(BaseModel):
+    name: typing.Optional[str] = None
+    description: typing.Optional[str] = None
+    price: typing.Optional[int] = Field(..., gt=74, description="Price of item")
+    category: typing.Optional[Category] = None
+    upc: typing.Optional[UPC] = None
+
 
 
 class GameflipAPIParams(BaseModel):

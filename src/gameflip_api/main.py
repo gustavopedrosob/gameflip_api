@@ -4,7 +4,8 @@ import requests
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus
 import pyotp
 
-from gameflip_api.params import GameflipAPIParams, IdParam, ListingsParams, PriceRange, DatetimeRange
+from gameflip_api.params import GameflipAPIParams, IdParam, ListingSearchParams, PriceRange, DatetimeRange, \
+    ListingPostParams
 
 
 class GameflipAPI:
@@ -100,12 +101,12 @@ class GameflipAPI:
         Returns:
             requests.Response: Returns a response object
         """
-        listings_params = ListingsParams(term=term, category=category, platform=platform, genre=genre, upc=upc,
-                                         shipping_paid_by=shipping_paid_by, digital=digital, status=status, owner=owner,
-                                         condition=condition, condition_min=condition_min, price=price, created=created,
-                                         updated=updated, expiration=expiration,
-                                         seller_online_until=seller_online_until, tags=tags, start=start)
-        return requests.get(f"{cls.__api}/listing", listings_params.model_dump(exclude_none=True))
+        params = ListingSearchParams(term=term, category=category, platform=platform, genre=genre, upc=upc,
+                                              shipping_paid_by=shipping_paid_by, digital=digital, status=status, owner=owner,
+                                              condition=condition, condition_min=condition_min, price=price, created=created,
+                                              updated=updated, expiration=expiration,
+                                              seller_online_until=seller_online_until, tags=tags, start=start)
+        return requests.get(f"{cls.__api}/listing", params.model_dump(exclude_none=True))
 
     @classmethod
     def listing_of(cls, id_: str):
@@ -117,3 +118,28 @@ class GameflipAPI:
         """
         IdParam(id_=id_)
         return requests.get(f"{cls.__api}/listing/{id_}")
+
+    def listing_post(
+            self,
+            name: typing.Optional[str] = None,
+            description: typing.Optional[str] = None,
+            price: typing.Optional[int] = None,
+            category: typing.Optional[str] = None,
+            upc: typing.Optional[str] = None,
+    ) -> requests.Response:
+        """
+        Makes a post to /api/v1/listing to create a new listing
+        :param name: Name of listing
+        :param description: Description of listing
+        :param price: Price of listing
+        :param category: Category of listing
+        :param upc: UPC of listing
+        :raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type or price is invalid
+        :return: requests.Response
+        """
+        params = ListingPostParams(name=name, description=description, price=price, category=category, upc=upc)
+        return requests.post(
+            f"{self.__api}/listing",
+            params.model_dump(exclude_none=True),
+            headers=self.__get_auth_header()
+        )

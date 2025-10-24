@@ -5,7 +5,7 @@ import pytest
 from pydantic import ValidationError
 from dotenv import load_dotenv
 from gameflip_api import GameflipAPI
-from gameflip_api.params import PriceRange, Range, ListingsParams, DatetimeRange
+from gameflip_api.params import PriceRange, Range, ListingSearchParams, DatetimeRange
 
 load_dotenv()
 
@@ -98,9 +98,13 @@ def test_listing_formats():
     datetime_2 = datetime.datetime(2025, 1, 1, 12)
     datetime_range = DatetimeRange(start=datetime_1, end=datetime_2)
     expected_datetime_string = '2025-01-01T00:00:00.000Z,2025-01-01T12:00:00.000Z'
-    listing_params = ListingsParams(price=PriceRange(start=75, end=100), created=datetime_range, updated=datetime_range, expiration=datetime_range, seller_online_until=datetime_range)
+    listing_params = ListingSearchParams(price=PriceRange(start=75, end=100), created=datetime_range, updated=datetime_range, expiration=datetime_range, seller_online_until=datetime_range)
     params = listing_params.model_dump()
     assert (params['price'] == '75,100' and params['created'] == expected_datetime_string and
             params['updated'] == expected_datetime_string and params['expiration'] == expected_datetime_string and
             params['seller_online_until'] == expected_datetime_string)
 
+
+def test_listing_post_success():
+    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+    assert api.listing_post().status_code == 200
