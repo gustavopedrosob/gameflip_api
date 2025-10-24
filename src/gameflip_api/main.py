@@ -4,7 +4,7 @@ import requests
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus
 import pyotp
 
-from gameflip_api.params import GameflipAPIParams, IdParam, ListingsParams, Range, PriceRange, DatetimeRange
+from gameflip_api.params import GameflipAPIParams, IdParam, ListingsParams, PriceRange, DatetimeRange
 
 
 class GameflipAPI:
