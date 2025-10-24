@@ -21,6 +21,9 @@ class GameflipAPI:
         self.__secret = secret
         self.__totp = pyotp.TOTP(secret)
 
+    def __get_auth_header(self) -> dict:
+        return {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
+
     def profile(self, id_: str = 'me') -> requests.Response:
         """
         Makes a request to the gameflip API to fetch user profile information, which you can get your own information.
@@ -30,16 +33,14 @@ class GameflipAPI:
         :return: requests.Response
         """
         IdParam(id_=id_)
-        headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
-        return requests.get(f"{self.__api}/account/{id_}/profile", headers=headers)
+        return requests.get(f"{self.__api}/account/{id_}/profile", headers=self.__get_auth_header())
 
     def wallet_history(self) -> requests.Response:
         """
         Makes a request to the gameflip API to fetch your wallet history.
         :return: requests.Response
         """
-        headers = {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
-        return requests.get(f"{self.__api}/account/me/wallet_history", headers=headers)
+        return requests.get(f"{self.__api}/account/me/wallet_history", headers=self.__get_auth_header())
 
     @staticmethod
     def get_rldata_items() -> requests.Response:
