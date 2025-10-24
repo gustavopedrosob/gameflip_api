@@ -51,7 +51,7 @@ class GameflipAPI:
         return requests.get("https://gameflip.com/api/gameitem/inventory/812872018935")
 
     @classmethod
-    def listings(
+    def listing_search(
             cls,
             term: typing.Optional[str] = None,
             category: typing.Optional[Category] = None,
@@ -108,7 +108,7 @@ class GameflipAPI:
         return requests.get(f"{cls.__api}/listing", listings_params.model_dump(exclude_none=True))
 
     @classmethod
-    def listing(cls, id_: str):
+    def listing_of(cls, id_: str):
         """
         Makes a request to the gameflip API to fetch listing information.
         :param id_: The id is on the url of any listing, it usually made with a bunt of numbers.
