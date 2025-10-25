@@ -4,8 +4,7 @@ import typing
 from pydantic import BaseModel, Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
-from gameflip_api.enums import Category, Platform, UPC, ShippingPaidBy, ListingStatus
-
+from gameflip_api.enums import Category, Platform, UPC, ShippingPaidBy, ListingStatus, AcceptCurrency
 
 T = typing.TypeVar("T")
 
@@ -73,10 +72,11 @@ class ListingSearchParams(BaseModel):
 class ListingPostParams(BaseModel):
     name: typing.Optional[str] = None
     description: typing.Optional[str] = None
-    price: typing.Optional[int] = Field(..., gt=74, description="Price of item")
+    price: typing.Optional[int] = Field(None, gt=74, description="Price of item")
     category: typing.Optional[Category] = None
     upc: typing.Optional[UPC] = None
-
+    accept_currency: typing.Optional[AcceptCurrency] = None
+    digital: typing.Optional[bool] = None
 
 
 class GameflipAPIParams(BaseModel):
