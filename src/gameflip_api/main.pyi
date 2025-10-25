@@ -212,3 +212,11 @@ class GameflipAPI:
         :return: requests.Response
         """
         ...
+
+    def listing_delete(self, id_: str) -> requests.Response:
+        """
+        Makes a request to the gameflip API to delete a listing
+        :param id_: The id of the listing
+        :return: requests.Response
+        """
+        ...

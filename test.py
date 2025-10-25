@@ -112,3 +112,26 @@ def test_listing_post_success():
     api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
     result = api.listing_post()
     assert result.status_code == 200
+
+
+def test_listing_delete_success():
+    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+    post_response = api.listing_post()
+    assert post_response.status_code == 200
+    id_ = post_response.json()['data']['id']
+    result = api.listing_delete(id_)
+    assert result.status_code == 200
+
+
+def test_empty_listing_delete_error():
+    with pytest.raises(ValidationError):
+        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+        api.listing_delete("")
+
+
+@pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
+def test_listing_delete_type_error(value):
+    with pytest.raises(ValidationError):
+        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+        # noinspection PyTypeChecker
+        api.listing_delete(value)

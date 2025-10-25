@@ -68,3 +68,7 @@ class GameflipAPI:
             params.model_dump(exclude_none=True),
             headers=self.__get_auth_header()
         )
+
+    def listing_delete(self, id_):
+        IdParam(id_=id_)
+        return requests.delete(f"{self.__api}/listing/{id_}", headers=self.__get_auth_header())
