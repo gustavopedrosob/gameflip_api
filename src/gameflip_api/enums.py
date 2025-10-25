@@ -1,11 +1,11 @@
 from enum import Enum
 
-class ShippingPaidBy(Enum):
+class ShippingPaidBy(str, Enum):
     BUYER = "buyer"
     SELLER = "seller"
 
 
-class Category(Enum):
+class Category(str, Enum):
     GAMES = 'CONSOLE_VIDEO_GAMES'  # Video games, digital or physical
     INGAME = 'DIGITAL_INGAME'  # In-game items, digital only
     GIFTCARD = 'GIFTCARD'  # Gift cards, digital or physical
@@ -16,7 +16,7 @@ class Category(Enum):
     OTHER = 'UNKNOWN'  # Unsupported category
 
 
-class Kind(Enum):
+class Kind(str, Enum):
     ITEM = 'item'  # Item selling
     GIG = 'gig'  # Gig selling
 
@@ -98,7 +98,7 @@ class UPC(str, Enum):
     XDEFIANT = "GF00XDEFIANT"
 
 
-class Platform(Enum):
+class Platform(str, Enum):
     XBOX = 'xbox'
     X360 = 'xbox_360'
     XONE = 'xbox_one'
@@ -127,20 +127,20 @@ class Platform(Enum):
     UNKNOWN = 'unknown'  # For PC platform, use UNKNOWN
 
 
-class ShippingWithinDays(Enum):
+class ShippingWithinDays(int, Enum):
     AUTO = 0
     ONE = 1
     TWO = 2
     THREE = 3
 
 
-class ExpireInDays(Enum):
+class ExpireInDays(int, Enum):
     SEVEN = 7
     FOURTEEN = 14
     THIRTY = 30
 
 
-class EscrowStatus(Enum):
+class EscrowStatus(str, Enum):
     START = 'start'  # Initial condition: seller has Steam item(s)
     RECEIVE_PENDING = 'receive_pending'  # Offer made to seller to get Steam item(s)
     RECEIVED = 'received'  # Gameflip has Steam item(s)
@@ -153,7 +153,7 @@ class EscrowStatus(Enum):
     RETURNED = "returned"  # Escrow status: Seller has accepted return of item
 
 
-class ListingStatus(Enum):
+class ListingStatus(str, Enum):
     DRAFT = "draft"  # Listing is draft/editing mode. You cannot list it when it's in this mode
     READY = "ready"  # Listing is ready to be listed, required fields have been filled
     ONSALE = "onsale"  # Listing is published to the public
@@ -161,20 +161,20 @@ class ListingStatus(Enum):
     SOLD = "sold"  # A buyer had bought the listing
 
 
-class ListingPhotoStatus(Enum):
+class ListingPhotoStatus(str, Enum):
     PENDING = "pending"
     ACTIVE = "active"
     DELETED = "deleted"
 
 
-class ListingOps(Enum):
+class ListingOps(str, Enum):
     TEST = "test"
     ADD = "add"
     REPLACE = "replace"
     REMOVE = "remove"
 
 
-class ExchangeStatus(Enum):
+class ExchangeStatus(str, Enum):
     PENDING = "pending"  # Exchange is being created
     PENDING_CANCEL = "pending_cancel"  # Exchange is being canceled
     PENDING_RESCINDING = "pending_rescinding"  # Exchange is being refunded
@@ -186,14 +186,14 @@ class ExchangeStatus(Enum):
     RESCINDED = "rescinded"  # Exchange has been cancelled with refund completed
 
 
-class AcceptCurrency(Enum):
+class AcceptCurrency(str, Enum):
     USD = "USD"
     FLP = "FLP"
     BOTH = "BOTH"
 
 
 # Steam APP IDs and Context IDs can be defined in a similar manner if needed.
-class SteamAppID(Enum):
+class SteamAppID(str, Enum):
     CSGO = '730'  # CS:GO
     TF2 = '440'  # Team Fortress 2
     DOTA2 = '570'  # DOTA 2
@@ -203,7 +203,12 @@ class SteamAppID(Enum):
     JUST_SURVIVE = '295110'  # H1Z1: Just Survive
 
 
-class SteamContextID(Enum):
+class SteamContextID(str, Enum):
     CONTEXT_ID_433850 = '1'  # H1Z1: King of the Kill
     CONTEXT_ID_295110 = '1'  # Just Survive
     CONTEXT_ID_DEFAULT = '2'  # Default if not specified above
+
+
+class Visibility(str, Enum):
+    UNLISTED = 'unlisted'
+    PUBLIC = 'public'

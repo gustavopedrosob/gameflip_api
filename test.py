@@ -110,4 +110,5 @@ def test_listing_formats():
 
 def test_listing_post_success():
     api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
-    assert api.listing_post().status_code == 200
+    result = api.listing_post()
+    assert result.status_code == 200

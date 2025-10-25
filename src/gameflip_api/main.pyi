@@ -4,7 +4,7 @@ import typing
 import pyotp
 import requests
 
-from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus, AcceptCurrency
+from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus, AcceptCurrency, Visibility
 from gameflip_api.params import PriceRange, DatetimeRange, ListingSearchParams, ListingPostParams
 
 
@@ -189,23 +189,25 @@ class GameflipAPI:
     def listing_post(
         self,
         *,
-        accept_currency: typing.Optional[AcceptCurrency] = None,
         name: typing.Optional[str] = None,
         description: typing.Optional[str] = None,
         price: typing.Optional[int] = None,
         category: typing.Optional[str] = None,
         upc: typing.Optional[UPC] = None,
-        digital: typing.Optional[bool] = None,
+        accept_currency: AcceptCurrency = AcceptCurrency.USD,
+        digital: bool = False,
+        visibility: Visibility = Visibility.PUBLIC
     ) -> requests.Response:
         """
         Makes a post to /api/v1/listing to create a new listing
-        :param accept_currency: Accept currency of the listing
         :param name: Name of listing
         :param description: Description of listing
         :param price: Price of listing
         :param category: Category of listing
         :param upc: UPC of listing
+        :param accept_currency: Accept currency of the listing
         :param digital: Specifies if it's a digital listing
+        :param visibility: Visibility of listing
         :raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type or price is invalid
         :return: requests.Response
         """
