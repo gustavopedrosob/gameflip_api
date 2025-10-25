@@ -94,7 +94,7 @@ class GameflipAPI:
             seller_online_until: Filters sellers online
             tags: A special term filter which also allows logical AND using the carrot ^ operator in addition
                 to logical OR with comma ,
-                Precenence is given to OR operations over AND so that a filter like tags=a,b^c^d,e will match all
+                Precedence is given to OR operations over AND so that a filter like tags=a,b^c^d,e will match all
                 listings that have (a OR b) AND (c) AND (d OR e).
             start: Gets listing by page number
 
