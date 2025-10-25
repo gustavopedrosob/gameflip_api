@@ -34,6 +34,7 @@ def test_empty_profile_id_error():
 def test_profile_id_type_error(value):
     with pytest.raises(ValidationError):
         api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+        # noinspection PyTypeChecker
         api.profile(value)
 
 
@@ -47,29 +48,31 @@ def test_empty_listing_id_error():
 def test_listing_id_type_error(value):
     with pytest.raises(ValidationError):
         api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+        # noinspection PyTypeChecker
         api.listing_of(value)
 
 
 def test_empty_api_key_error():
     with pytest.raises(ValidationError):
-        api = GameflipAPI("", os.getenv('SECRET'))
+        GameflipAPI("", os.getenv('SECRET'))
 
 
 @pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
 def test_api_key_type_error(value):
     with pytest.raises(ValidationError):
-        api = GameflipAPI(value, os.getenv('SECRET'))
+        # noinspection PyTypeChecker
+        GameflipAPI(value, os.getenv('SECRET'))
 
 
 def test_empty_secret_error():
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv("KEY_API"), "")
+        GameflipAPI(os.getenv("KEY_API"), "")
 
 
 @pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
 def test_secret_type_error(value):
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv("KEY_API"), "")
+        GameflipAPI(os.getenv("KEY_API"), "")
 
 
 def test_any_listing_success():
