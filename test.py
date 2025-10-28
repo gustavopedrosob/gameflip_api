@@ -5,6 +5,7 @@ import pytest
 from pydantic import ValidationError
 from dotenv import load_dotenv
 from gameflip_api import GameflipAPI
+from gameflip_api.enums import Category
 from gameflip_api.params import PriceRange, Range, ListingSearchParams, DatetimeRange
 
 load_dotenv()
@@ -135,3 +136,10 @@ def test_listing_delete_type_error(value):
         api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         # noinspection PyTypeChecker
         api.listing_delete(value)
+
+
+def test_post_photo_success():
+    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+    result = api.listing_post(name="Test Photo", description="Testing Post Photo", price=75, category=Category.INGAME, digital=True)
+    assert result.status_code == 200
+    api.post_photo(result.json()['data']['id'], r"https://images.tcdn.com.br/img/img_prod/829162/produto_teste_nao_compre_81_1_2d7f0b8fa031db8286665740dd8de217.jpg", display_order=0)
