@@ -4,7 +4,7 @@ import requests
 import pyotp
 
 from gameflip_api.enums import ListingOps, ListingPhotoStatus
-from gameflip_api.params import GameflipAPIParams, IdParam, ListingPostParams, Op
+from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op
 import validators
 
 
@@ -20,9 +20,11 @@ class GameflipAPI:
     def __get_auth_header(self):
         return {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
 
-    def profile(self, id_ = 'me'):
-        IdParam(id_=id_)
-        return requests.get(f"{self.__api}/account/{id_}/profile", headers=self.__get_auth_header())
+    def profile(self, uuid = 'me'):
+        if uuid != 'me':
+            # noinspection PyTypeChecker
+            UUIDParam(uuid=uuid)
+        return requests.get(f"{self.__api}/account/{uuid}/profile", headers=self.__get_auth_header())
 
     def wallet_history(self):
         return requests.get(f"{self.__api}/account/me/wallet_history", headers=self.__get_auth_header())
@@ -44,13 +46,13 @@ class GameflipAPI:
                             headers=self.__get_auth_header())
 
     @classmethod
-    def listing_of(cls, id_):
-        IdParam(id_=id_)
-        return requests.get(f"{cls.__api}/listing/{id_}")
+    def listing_of(cls, uuid):
+        UUIDParam(uuid=uuid)
+        return requests.get(f"{cls.__api}/listing/{uuid}")
 
-    def my_listing_of(self, id_):
-        IdParam(id_=id_)
-        return requests.get(f"{self.__api}/listing/{id_}", headers=self.__get_auth_header())
+    def my_listing_of(self, uuid):
+        UUIDParam(uuid=uuid)
+        return requests.get(f"{self.__api}/listing/{uuid}", headers=self.__get_auth_header())
 
     def listing_post(self, params = None, **kwargs):
         if params is None:
@@ -61,19 +63,19 @@ class GameflipAPI:
             headers=self.__get_auth_header()
         )
 
-    def listing_delete(self, id_):
-        IdParam(id_=id_)
-        return requests.delete(f"{self.__api}/listing/{id_}", headers=self.__get_auth_header())
+    def listing_delete(self, uuid):
+        UUIDParam(uuid=uuid)
+        return requests.delete(f"{self.__api}/listing/{uuid}", headers=self.__get_auth_header())
 
-    def listing_patch(self, id_, ops):
-        IdParam(id_=id_)
+    def listing_patch(self, uuid, ops):
+        UUIDParam(uuid=uuid)
         ops_objects = map(lambda op: op if isinstance(op, Op) else Op(**op), ops)
         ops_json = list(map(lambda op: op.model_dump(mode="json"), ops_objects))
         headers = {"Content-Type": "application/json-patch+json"}
         headers.update(self.__get_auth_header())
-        return requests.patch(f"{self.__api}/listing/{id_}", json=ops_json, headers=headers)
+        return requests.patch(f"{self.__api}/listing/{uuid}", json=ops_json, headers=headers)
 
-    def post_photo(self, listing_id, photo, display_order):
+    def post_photo(self, listing_uuid, photo, display_order):
         if not (isinstance(photo, Path) or isinstance(photo, str)):
             raise TypeError("Photo must be of type Path or str.")
 
@@ -92,7 +94,7 @@ class GameflipAPI:
             photo_data = open(photo_path, "rb")
             mime_type = photo_path.suffix[1:]
 
-        post_photo_request = requests.post(f"{self.__api}/listing/{listing_id}/photo", headers=self.__get_auth_header())
+        post_photo_request = requests.post(f"{self.__api}/listing/{listing_uuid}/photo", headers=self.__get_auth_header())
         post_photo_request.raise_for_status()
         post_photo_data = post_photo_request.json()['data']
         upload_photo_url = post_photo_data['upload_url']
@@ -109,5 +111,5 @@ class GameflipAPI:
         else:
             ops.append(Op(op=ListingOps.REPLACE, path=f'/cover_photo', value=photo_id))
 
-        listing_patch_request = self.listing_patch(listing_id, ops)
+        listing_patch_request = self.listing_patch(listing_uuid, ops)
         listing_patch_request.raise_for_status()
