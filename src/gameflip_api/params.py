@@ -4,7 +4,8 @@ import typing
 from pydantic import BaseModel, Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
-from gameflip_api.enums import Category, Platform, UPC, ShippingPaidBy, ListingStatus, AcceptCurrency, Visibility
+from gameflip_api.enums import Category, Platform, UPC, ShippingPaidBy, ListingStatus, AcceptCurrency, Visibility, \
+    ListingOps
 
 T = typing.TypeVar("T")
 
@@ -87,3 +88,9 @@ class GameflipAPIParams(BaseModel):
 
 class IdParam(BaseModel):
     id_: str = Field(..., min_length=1, description="Id is required.")
+
+
+class Op(BaseModel):
+    op: ListingOps
+    path: str
+    value: typing.Any

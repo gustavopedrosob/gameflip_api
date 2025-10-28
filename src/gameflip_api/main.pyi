@@ -1,11 +1,12 @@
 import datetime
 import typing
+from pathlib import Path
 
 import pyotp
 import requests
 
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus, AcceptCurrency, Visibility
-from gameflip_api.params import PriceRange, DatetimeRange, ListingSearchParams, ListingPostParams
+from gameflip_api.params import PriceRange, DatetimeRange, ListingSearchParams, ListingPostParams, Op
 
 
 class GameflipAPI:
@@ -192,7 +193,7 @@ class GameflipAPI:
         name: typing.Optional[str] = None,
         description: typing.Optional[str] = None,
         price: typing.Optional[int] = None,
-        category: typing.Optional[str] = None,
+        category: typing.Optional[Category] = None,
         upc: typing.Optional[UPC] = None,
         accept_currency: AcceptCurrency = AcceptCurrency.USD,
         digital: bool = False,
@@ -218,5 +219,27 @@ class GameflipAPI:
         Makes a request to the gameflip API to delete a listing
         :param id_: The id of the listing
         :return: requests.Response
+        """
+        ...
+
+    def listing_patch(self, id_: str, ops: typing.List[typing.Union[Op, typing.Dict]]) -> requests.Response:
+        """
+        Makes a request to the gameflip API to update a listing
+        :param id_: The id of the listing
+        :param ops: Operations to apply
+        :return: requests.Response
+        """
+        ...
+
+    def post_photo(self, listing_id: str, photo: typing.Union[str, Path], display_order: int):
+        """
+        Makes a serie of requests to update a listing photo
+        :param listing_id: The id of the listing
+        :param photo: Url or Path for the photo
+        :param display_order: Display order of the photo
+        :raise TypeError: photo is not a string or a Path
+        :raise HTTPError: some request goes wrong
+        :raise FileNotFoundError: photo path not found or don't exist
+        :return: None
         """
         ...
