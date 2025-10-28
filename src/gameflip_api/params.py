@@ -1,5 +1,6 @@
 import datetime
 import typing
+from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
@@ -86,8 +87,8 @@ class GameflipAPIParams(BaseModel):
     secret: str = Field(..., min_length=1, description="Secret is required.")
 
 
-class IdParam(BaseModel):
-    id_: str = Field(..., min_length=1, description="Id is required.")
+class UUIDParam(BaseModel):
+    uuid: UUID
 
 
 class Op(BaseModel):

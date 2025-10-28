@@ -77,7 +77,7 @@ def test_secret_type_error(value):
 
 
 def test_any_listing_success():
-    assert GameflipAPI.listing_of("44e45372-b6f1-4400-af78-419c29243d6c").status_code == 200
+    assert GameflipAPI.listing_of("fd1bf0a2-0e0e-4536-b868-479a95a61f9a").status_code == 200
 
 
 def test_listings_invalid_price_range_error():

@@ -1,6 +1,7 @@
 import datetime
 import typing
 from pathlib import Path
+from uuid import UUID
 
 import pyotp
 import requests
@@ -25,10 +26,10 @@ class GameflipAPI:
 
     def __get_auth_header(self) -> dict: ...
 
-    def profile(self, id_: str = 'me') -> requests.Response:
+    def profile(self, uuid: typing.Union[str, UUID] = 'me') -> requests.Response:
         """
         Makes a request to the gameflip API to fetch user profile information, which you can get your own information.
-        :param id_: The id is on the url of any profile, it usually starts with 'us-east' and ends with a bunt of numbers.
+        :param uuid: The id is on the url of any profile, it usually starts with 'us-east' and ends with a bunt of numbers.
         To fetch data from your own profile you can set the id with 'me'.
         :raise pydantic.error_wrappers.ValidationError: If id_ is empty or not a string.
         :return: requests.Response
@@ -165,19 +166,19 @@ class GameflipAPI:
         ...
 
     @classmethod
-    def listing_of(cls, id_: str) -> requests.Response:
+    def listing_of(cls, uuid: typing.Union[str, UUID]) -> requests.Response:
         """
         Makes a request to the gameflip API to fetch listing information.
-        :param id_: The id is on the url of any listing, it usually made with a bunt of numbers.
+        :param uuid: The id is on the url of any listing, it usually made with a bunt of numbers.
         :raise pydantic.error_wrappers.ValidationError: If id_ is empty or not a string.
         :return: requests.Response
         """
         ...
 
-    def my_listing_of(self, id_: str) -> requests.Response:
+    def my_listing_of(self, uuid: typing.Union[str, UUID]) -> requests.Response:
         """
         Makes a request to the gameflip API to fetch listing information. Can fetch your own private listing.
-        :param id_: The id is on the url of any listing, it usually made with a bunt of numbers.
+        :param uuid: The id is on the url of any listing, it usually made with a bunt of numbers.
         :raise pydantic.error_wrappers.ValidationError: If id_ is empty or not a string.
         :return: requests.Response
         """
@@ -214,27 +215,27 @@ class GameflipAPI:
         """
         ...
 
-    def listing_delete(self, id_: str) -> requests.Response:
+    def listing_delete(self, uuid: typing.Union[str, UUID]) -> requests.Response:
         """
         Makes a request to the gameflip API to delete a listing
-        :param id_: The id of the listing
+        :param uuid: The id of the listing
         :return: requests.Response
         """
         ...
 
-    def listing_patch(self, id_: str, ops: typing.List[typing.Union[Op, typing.Dict]]) -> requests.Response:
+    def listing_patch(self, uuid: typing.Union[str, UUID], ops: typing.List[typing.Union[Op, typing.Dict]]) -> requests.Response:
         """
         Makes a request to the gameflip API to update a listing
-        :param id_: The id of the listing
+        :param uuid: The id of the listing
         :param ops: Operations to apply
         :return: requests.Response
         """
         ...
 
-    def post_photo(self, listing_id: str, photo: typing.Union[str, Path], display_order: int):
+    def post_photo(self, listing_uuid: typing.Union[str, UUID], photo: typing.Union[str, Path], display_order: int):
         """
         Makes a serie of requests to update a listing photo
-        :param listing_id: The id of the listing
+        :param listing_uuid: The id of the listing
         :param photo: Url or Path for the photo
         :param display_order: Display order of the photo
         :raise TypeError: photo is not a string or a Path
