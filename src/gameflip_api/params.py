@@ -21,6 +21,13 @@ class Range(BaseModel, typing.Generic[T]):
             raise ValueError("start must be greater or equal to end.")
         return value
 
+    def __str__(self):
+        return f"{self.start},{self.end}"
+
+
+class IntRange(Range[int]):
+    pass
+
 
 class PriceRange(Range[int]):
     @field_validator("start", "end")
@@ -29,9 +36,6 @@ class PriceRange(Range[int]):
         if v < 75:
             raise ValueError("start and end must be greater or equal to 75.")
         return v
-
-    def __str__(self):
-        return f"{self.start},{self.end}"
 
 
 class DatetimeRange(Range[datetime.datetime]):
@@ -95,3 +99,29 @@ class Op(BaseModel):
     op: ListingOps
     path: str
     value: typing.Any
+
+
+class ExchangeParams(BaseModel):
+    role: typing.Optional[ShippingPaidBy] = None
+    id: typing.Optional[UUID] = None
+    name: typing.Optional[str] = None
+    buyer: typing.Optional[str] = None
+    seller: typing.Optional[str] = None
+    price: typing.Optional[PriceRange] = None
+    risk: typing.Optional[IntRange] = None
+    status: typing.Optional[ListingStatus] = None
+    buyer_rated : typing.Optional[bool] = None
+    seller_rated : typing.Optional[bool] = None
+    start: typing.Optional[int] = None
+    category: typing.Optional[Category] = None
+    upc: typing.Optional[UPC] = None
+    digital: typing.Optional[bool] = None
+    escrow: typing.Optional[bool] = None
+    settled: typing.Optional[DatetimeRange] = None
+    shipped: typing.Optional[DatetimeRange] = None
+    received: typing.Optional[DatetimeRange] = None
+    auto_rate_after: typing.Optional[DatetimeRange] = None
+    created: typing.Optional[DatetimeRange] = None
+    updated: typing.Optional[DatetimeRange] = None
+    version: typing.Optional[int] = None
+    limit: typing.Optional[int] = None
