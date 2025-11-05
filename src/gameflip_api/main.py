@@ -4,7 +4,7 @@ import requests
 import pyotp
 
 from gameflip_api.enums import ListingOps, ListingPhotoStatus
-from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op, ExchangeParams
+from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op, ExchangeParams, ExchangePostParams
 import validators
 
 
@@ -126,3 +126,10 @@ class GameflipAPI:
         elif not isinstance(params, ExchangeParams):
             raise TypeError("params must be of type ExchangeParams.")
         return requests.get(f"{self.__api}/exchange", params.model_dump(mode='json'), headers=self.__get_auth_header())
+
+    def exchange_post(self, params = None, **kwargs):
+        if params is None:
+            params = ExchangePostParams(**kwargs)
+        elif not isinstance(params, ExchangePostParams):
+            raise TypeError("params must be of type ExchangePostParams.")
+        return requests.post(f"{self.__api}/exchange", json=params.model_dump(mode='json'), headers=self.__get_auth_header())
