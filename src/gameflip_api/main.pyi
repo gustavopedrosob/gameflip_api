@@ -8,7 +8,7 @@ import requests
 
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus, AcceptCurrency, Visibility
 from gameflip_api.params import PriceRange, DatetimeRange, ListingSearchParams, ListingPostParams, Op, ExchangeParams, \
-    IntRange
+    IntRange, ExchangePostParams
 
 
 class GameflipAPI:
@@ -249,31 +249,31 @@ class GameflipAPI:
 
     @typing.overload
     def exchange_search(
-            self,
-            *,
-            role: typing.Optional[ShippingPaidBy] = None,
-            id: typing.Optional[str, UUID] = None,
-            name: typing.Optional[str] = None,
-            buyer: typing.Optional[str] = None,
-            seller: typing.Optional[str] = None,
-            price: typing.Optional[PriceRange] = None,
-            risk: typing.Optional[IntRange] = None,
-            status: typing.Optional[ShippingPaidBy] = None,
-            start: typing.Optional[int] = None,
-            buyer_rated: typing.Optional[bool] = None,
-            seller_rated: typing.Optional[bool] = None,
-            category: typing.Optional[Category] = None,
-            upc: typing.Optional[UPC] = None,
-            digital: typing.Optional[bool] = None,
-            escrow: typing.Optional[bool] = None,
-            settled: typing.Optional[DatetimeRange] = None,
-            shipped: typing.Optional[DatetimeRange] = None,
-            received: typing.Optional[DatetimeRange] = None,
-            auto_rate_after: typing.Optional[DatetimeRange] = None,
-            created: typing.Optional[DatetimeRange] = None,
-            updated: typing.Optional[DatetimeRange] = None,
-            version: typing.Optional[int] = None,
-            limit: typing.Optional[int] = None,
+        self,
+        *,
+        role: typing.Optional[ShippingPaidBy] = None,
+        id: typing.Optional[str, UUID] = None,
+        name: typing.Optional[str] = None,
+        buyer: typing.Optional[str] = None,
+        seller: typing.Optional[str] = None,
+        price: typing.Optional[PriceRange] = None,
+        risk: typing.Optional[IntRange] = None,
+        status: typing.Optional[ShippingPaidBy] = None,
+        start: typing.Optional[int] = None,
+        buyer_rated: typing.Optional[bool] = None,
+        seller_rated: typing.Optional[bool] = None,
+        category: typing.Optional[Category] = None,
+        upc: typing.Optional[UPC] = None,
+        digital: typing.Optional[bool] = None,
+        escrow: typing.Optional[bool] = None,
+        settled: typing.Optional[DatetimeRange] = None,
+        shipped: typing.Optional[DatetimeRange] = None,
+        received: typing.Optional[DatetimeRange] = None,
+        auto_rate_after: typing.Optional[DatetimeRange] = None,
+        created: typing.Optional[DatetimeRange] = None,
+        updated: typing.Optional[DatetimeRange] = None,
+        version: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
     ) -> requests.Response:
         """
         Makes a request to the gameflip API to fetch exchange
@@ -305,3 +305,24 @@ class GameflipAPI:
         :return: requests.Response
         """
         ...
+
+    @typing.overload
+    def exchange_post(self, params: ExchangePostParams) -> requests.Response: ...
+
+    @typing.overload
+    def exchange_post(
+        self,
+        *,
+        listing_id: typing.Union[str, UUID],
+        source_id: typing.Union[str, UUID],
+        address_id: typing.Union[str, UUID],
+    ):
+        """
+        Makes a request to the gameflip API to buy a listing
+        :param listing_id: listing id
+        :param source_id: source id
+        :param address_id: address id
+        ::raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type
+        ::raise TypeError: params is not ExchangePostParams neither None
+        :return: requests.Response
+        """

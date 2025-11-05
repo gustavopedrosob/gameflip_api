@@ -125,3 +125,9 @@ class ExchangeParams(BaseModel):
     updated: typing.Optional[DatetimeRange] = None
     version: typing.Optional[int] = None
     limit: typing.Optional[int] = None
+
+
+class ExchangePostParams(BaseModel):
+    listing_id: UUID
+    source_id: UUID
+    address_id: UUID
