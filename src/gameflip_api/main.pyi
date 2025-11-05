@@ -7,7 +7,8 @@ import pyotp
 import requests
 
 from gameflip_api.enums import ShippingPaidBy, Category, Platform, UPC, ListingStatus, AcceptCurrency, Visibility
-from gameflip_api.params import PriceRange, DatetimeRange, ListingSearchParams, ListingPostParams, Op
+from gameflip_api.params import PriceRange, DatetimeRange, ListingSearchParams, ListingPostParams, Op, ExchangeParams, \
+    IntRange
 
 
 class GameflipAPI:
@@ -79,33 +80,32 @@ class GameflipAPI:
         tags: typing.Optional[str] = None,
         start: typing.Optional[int] = None
     ) -> requests.Response:
-        """ Makes a get to /api/v1/listing
-
-        Args:
-            term: Searches listing name and description and generates relevance score
-            category: Filters category
-            platform: Filters platform
-            genre: Filters genre
-            upc: Filters UPC (Universal Product Code), games in this case
-            shipping_paid_by: Filters shipping paid by
-            digital: Filters if it's a digital listing
-            status: Filters status
-            owner: Filters owner
-            condition: Filters condition
-            condition_min: Filters condition (any one value defined for condition)
-            price: Filters price
-            created: Filters in a range when it has been created
-            updated: Filters in a range when it has been updated
-            expiration: Filters in a range for its expiration
-            seller_online_until: Filters sellers online
-            tags: A special term filter which also allows logical AND using the carrot ^ operator in addition
+        """
+        Makes a get to /api/v1/listing
+        ::param term: Searches listing name and description and generates relevance score
+        ::param category: Filters category
+        ::param platform: Filters platform
+        ::param genre: Filters genre
+        ::param upc: Filters UPC (Universal Product Code), games in this case
+        ::param shipping_paid_by: Filters shipping paid by
+        ::param digital: Filters if it's a digital listing
+        ::param status: Filters status
+        ::param owner: Filters owner
+        ::param condition: Filters condition
+        ::param condition_min: Filters condition (any one value defined for condition)
+        ::param price: Filters price
+        ::param created: Filters in a range when it has been created
+        ::param updated: Filters in a range when it has been updated
+        ::param expiration: Filters in a range for its expiration
+        ::param seller_online_until: Filters sellers online
+        ::param tags: A special term filter which also allows logical AND using the carrot ^ operator in addition
                 to logical OR with comma ,
                 Precedence is given to OR operations over AND so that a filter like tags=a,b^c^d,e will match all
                 listings that have (a OR b) AND (c) AND (d OR e).
-            start: Gets listing by page number
-
-        Returns:
-            requests.Response: Returns a response object
+        ::param start: Gets listing by page number
+        ::raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type
+        ::raise TypeError: params is not ListingPostParams neither None
+        ::return requests.Response: Returns a response object
         """
         ...
 
@@ -135,33 +135,32 @@ class GameflipAPI:
         tags: typing.Optional[str] = None,
         start: typing.Optional[int] = None,
     ) -> requests.Response:
-        """ Makes a get to /api/v1/listing
-
-        Args:
-            term: Searches listing name and description and generates relevance score
-            category: Filters category
-            platform: Filters platform
-            genre: Filters genre
-            upc: Filters UPC (Universal Product Code), games in this case
-            shipping_paid_by: Filters shipping paid by
-            digital: Filters if it's a digital listing
-            status: Filters status
-            owner: Filters owner
-            condition: Filters condition
-            condition_min: Filters condition (any one value defined for condition)
-            price: Filters price
-            created: Filters in a range when it has been created
-            updated: Filters in a range when it has been updated
-            expiration: Filters in a range for its expiration
-            seller_online_until: Filters sellers online
-            tags: A special term filter which also allows logical AND using the carrot ^ operator in addition
+        """
+        Makes a get to /api/v1/listing
+        ::param term: Searches listing name and description and generates relevance score
+        ::param category: Filters category
+        ::param platform: Filters platform
+        ::param genre: Filters genre
+        ::param upc: Filters UPC (Universal Product Code), games in this case
+        ::param shipping_paid_by: Filters shipping paid by
+        ::param digital: Filters if it's a digital listing
+        ::param status: Filters status
+        ::param owner: Filters owner
+        ::param condition: Filters condition
+        ::param condition_min: Filters condition (any one value defined for condition)
+        ::param price: Filters price
+        ::param created: Filters in a range when it has been created
+        ::param updated: Filters in a range when it has been updated
+        ::param expiration: Filters in a range for its expiration
+        ::param seller_online_until: Filters sellers online
+        ::param tags: A special term filter which also allows logical AND using the carrot ^ operator in addition
                 to logical OR with comma ,
                 Precedence is given to OR operations over AND so that a filter like tags=a,b^c^d,e will match all
                 listings that have (a OR b) AND (c) AND (d OR e).
-            start: Gets listing by page number
-
-        Returns:
-            requests.Response: Returns a response object
+        ::param start: Gets listing by page number
+        ::raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type
+        ::raise TypeError: params is not ListingPostParams neither None
+        ::return requests.Response: Returns a response object
         """
         ...
 
@@ -242,5 +241,67 @@ class GameflipAPI:
         :raise HTTPError: some request goes wrong
         :raise FileNotFoundError: photo path not found or don't exist
         :return: None
+        """
+        ...
+
+    @typing.overload
+    def exchange_search(self, params: ExchangeParams) -> requests.Response: ...
+
+    @typing.overload
+    def exchange_search(
+            self,
+            *,
+            role: typing.Optional[ShippingPaidBy] = None,
+            id: typing.Optional[str, UUID] = None,
+            name: typing.Optional[str] = None,
+            buyer: typing.Optional[str] = None,
+            seller: typing.Optional[str] = None,
+            price: typing.Optional[PriceRange] = None,
+            risk: typing.Optional[IntRange] = None,
+            status: typing.Optional[ShippingPaidBy] = None,
+            start: typing.Optional[int] = None,
+            buyer_rated: typing.Optional[bool] = None,
+            seller_rated: typing.Optional[bool] = None,
+            category: typing.Optional[Category] = None,
+            upc: typing.Optional[UPC] = None,
+            digital: typing.Optional[bool] = None,
+            escrow: typing.Optional[bool] = None,
+            settled: typing.Optional[DatetimeRange] = None,
+            shipped: typing.Optional[DatetimeRange] = None,
+            received: typing.Optional[DatetimeRange] = None,
+            auto_rate_after: typing.Optional[DatetimeRange] = None,
+            created: typing.Optional[DatetimeRange] = None,
+            updated: typing.Optional[DatetimeRange] = None,
+            version: typing.Optional[int] = None,
+            limit: typing.Optional[int] = None,
+    ) -> requests.Response:
+        """
+        Makes a request to the gameflip API to fetch exchange
+        ::param role: buyer or seller
+        ::param id: uuid of the exchange
+        ::param name: Name of listing
+        ::param buyer: uuid of the buyer
+        ::param seller: uuid of the seller
+        ::param price: price range of the exchange
+        ::param risk: risk range of the exchange
+        ::param status: status of the exchange
+        ::param start: start page of the fetch
+        ::param buyer_rated: buyer rated (True/False)
+        ::param seller_rated: seller rated (True/False)
+        ::param category: category of the listing
+        ::param upc: UPC of the listing
+        ::param digital: specifies if it's a digital listing
+        ::param escrow: specifies if it's exchange with escrow
+        ::param settled: settled time range of the listing
+        ::param shipped: shipped time range of the listing
+        ::param received: received time range of the listing
+        ::param auto_rate_after: time range
+        ::param created: time range of the listing
+        ::param updated: time range of the listing
+        ::param version: version of the exchange
+        ::param limit: limit the fetch
+        ::raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type
+        ::raise TypeError: params is not ExchangeParams neither None
+        :return: requests.Response
         """
         ...

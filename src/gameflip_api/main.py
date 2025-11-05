@@ -4,7 +4,7 @@ import requests
 import pyotp
 
 from gameflip_api.enums import ListingOps, ListingPhotoStatus
-from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op
+from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op, ExchangeParams
 import validators
 
 
@@ -37,11 +37,15 @@ class GameflipAPI:
     def listing_search(cls, params = None, **kwargs):
         if params is None:
             params = ListingPostParams(**kwargs)
+        elif not isinstance(params, ListingPostParams):
+            raise TypeError("params must be of type ListingPostParams.")
         return requests.get(f"{cls.__api}/listing", params.model_dump(exclude_none=True))
 
     def my_listing_search(self, params = None, **kwargs):
         if params is None:
             params = ListingPostParams(**kwargs)
+        elif not isinstance(params, ListingPostParams):
+            raise TypeError("params must be of type ListingPostParams.")
         return requests.get(f"{self.__api}/listing", params.model_dump(exclude_none=True),
                             headers=self.__get_auth_header())
 
@@ -57,6 +61,8 @@ class GameflipAPI:
     def listing_post(self, params = None, **kwargs):
         if params is None:
             params = ListingPostParams(**kwargs)
+        elif not isinstance(params, ListingPostParams):
+            raise TypeError("params must be of type ListingPostParams.")
         return requests.post(
             f"{self.__api}/listing",
             params.model_dump(exclude_none=True),
@@ -113,3 +119,10 @@ class GameflipAPI:
 
         listing_patch_request = self.listing_patch(listing_uuid, ops)
         listing_patch_request.raise_for_status()
+
+    def exchange_search(self, params = None, **kwargs):
+        if params is None:
+            params = ExchangeParams(**kwargs)
+        elif not isinstance(params, ExchangeParams):
+            raise TypeError("params must be of type ExchangeParams.")
+        return requests.get(f"{self.__api}/exchange", params.model_dump(mode='json'), headers=self.__get_auth_header())

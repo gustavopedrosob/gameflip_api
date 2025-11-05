@@ -9,6 +9,7 @@ from gameflip_api.enums import Category
 from gameflip_api.params import PriceRange, Range, ListingSearchParams, DatetimeRange
 
 load_dotenv()
+api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
 
 
 def test_listings_success():
@@ -16,39 +17,33 @@ def test_listings_success():
 
 
 def test_my_profile_success():
-    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
     assert api.profile().status_code == 200
 
 
 def test_any_profile_success():
-    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
     assert api.profile('us-east-1:dc501f75-302c-4419-8ece-57974d688e6f').status_code == 200
 
 
 def test_empty_profile_id_error():
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         api.profile("")
 
 
 @pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
 def test_profile_id_type_error(value):
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         # noinspection PyTypeChecker
         api.profile(value)
 
 
 def test_empty_listing_id_error():
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         api.listing_of("")
 
 
 @pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
 def test_listing_id_type_error(value):
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         # noinspection PyTypeChecker
         api.listing_of(value)
 
@@ -110,13 +105,11 @@ def test_listing_formats():
 
 
 def test_listing_post_success():
-    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
     result = api.listing_post()
     assert result.status_code == 200
 
 
 def test_listing_delete_success():
-    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
     post_response = api.listing_post()
     assert post_response.status_code == 200
     id_ = post_response.json()['data']['id']
@@ -126,20 +119,22 @@ def test_listing_delete_success():
 
 def test_empty_listing_delete_error():
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         api.listing_delete("")
 
 
 @pytest.mark.parametrize("value", [0, 0.1, [], {}, set()])
 def test_listing_delete_type_error(value):
     with pytest.raises(ValidationError):
-        api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
         # noinspection PyTypeChecker
         api.listing_delete(value)
 
 
 def test_post_photo_success():
-    api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
     result = api.listing_post(name="Test Photo", description="Testing Post Photo", price=75, category=Category.INGAME, digital=True)
     assert result.status_code == 200
     api.post_photo(result.json()['data']['id'], r"https://images.tcdn.com.br/img/img_prod/829162/produto_teste_nao_compre_81_1_2d7f0b8fa031db8286665740dd8de217.jpg", display_order=0)
+
+
+def test_exchange_sucess():
+    result = api.exchange_search()
+    assert result.status_code == 200
