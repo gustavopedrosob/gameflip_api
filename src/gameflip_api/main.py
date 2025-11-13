@@ -4,7 +4,8 @@ import requests
 import pyotp
 
 from gameflip_api.enums import ListingOps, ListingPhotoStatus
-from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op, ExchangeParams, ExchangePostParams
+from gameflip_api.params import GameflipAPIParams, UUIDParam, ListingPostParams, Op, ExchangeParams, ExchangePostParams, \
+    OwnerParam, ListingSearchParams
 import validators
 
 
@@ -20,11 +21,11 @@ class GameflipAPI:
     def __get_auth_header(self):
         return {"Authorization": f"GFAPI {self.__api_key}:{self.__totp.now()}"}
 
-    def profile(self, uuid = 'me'):
-        if uuid != 'me':
+    def profile(self, owner = 'me'):
+        if owner != 'me':
             # noinspection PyTypeChecker
-            UUIDParam(uuid=uuid)
-        return requests.get(f"{self.__api}/account/{uuid}/profile", headers=self.__get_auth_header())
+            OwnerParam(owner=owner)
+        return requests.get(f"{self.__api}/account/{owner}/profile", headers=self.__get_auth_header())
 
     def wallet_history(self):
         return requests.get(f"{self.__api}/account/me/wallet_history", headers=self.__get_auth_header())
@@ -36,15 +37,15 @@ class GameflipAPI:
     @classmethod
     def listing_search(cls, params = None, **kwargs):
         if params is None:
-            params = ListingPostParams(**kwargs)
-        elif not isinstance(params, ListingPostParams):
+            params = ListingSearchParams(**kwargs)
+        elif not isinstance(params, ListingSearchParams):
             raise TypeError("params must be of type ListingPostParams.")
         return requests.get(f"{cls.__api}/listing", params.model_dump(exclude_none=True))
 
     def my_listing_search(self, params = None, **kwargs):
         if params is None:
-            params = ListingPostParams(**kwargs)
-        elif not isinstance(params, ListingPostParams):
+            params = ListingSearchParams(**kwargs)
+        elif not isinstance(params, ListingSearchParams):
             raise TypeError("params must be of type ListingPostParams.")
         return requests.get(f"{self.__api}/listing", params.model_dump(exclude_none=True),
                             headers=self.__get_auth_header())

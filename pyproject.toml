@@ -1,0 +1,13 @@
+[project]
+name = "gameflip-api"
+version = "1.0.0"
+description = ""
+authors = [{ name="Gustavo Pedroso Bernardes", email="gpedrosobernardes@gmail.com" }]
+requires-python = ">=3.8"
+
+[build-system]
+requires = ["setuptools", "wheel", "validators", "pydantic", "pyotp", "requests"]
+build-backend = "setuptools.build_meta"
+
+[tool.pydantic-pycharm-plugin.parsable-types]
+"src.gameflip_api.types.AwsCognitoUUID" = ["str"]
