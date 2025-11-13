@@ -1,10 +1,17 @@
-import datetime
 import os
 from pprint import pprint
-
+from dotenv import load_dotenv
 from gameflip_api import GameflipAPI
 
-listing = GameflipAPI.listing_search(digital=True, seller_online_until=datetime.datetime.now())
+load_dotenv()
+
+print("Listing results:")
+
+listing_response = GameflipAPI.listing_search(digital=True, limit=1)
+pprint(listing_response.json())
 
 gameflip_api = GameflipAPI(os.getenv('key_api'), os.getenv('secret'))
-pprint(gameflip_api.profile())
+
+print("My profile info:")
+
+pprint(gameflip_api.profile().json())
