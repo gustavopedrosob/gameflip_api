@@ -9,7 +9,7 @@ from gameflip_api.enums import Category
 from gameflip_api.params import PriceRange, Range, ListingSearchParams, DatetimeRange, OwnerParam
 
 load_dotenv()
-api = GameflipAPI(os.getenv('KEY_API'), os.getenv('SECRET'))
+api = GameflipAPI(os.getenv('GFAPI_KEY'), os.getenv('GFAPI_SECRET'))
 
 
 def test_listings_success():
