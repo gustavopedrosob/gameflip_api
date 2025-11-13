@@ -14,7 +14,7 @@ Facilita a integração via script, para automatizar operações, consultar dado
 
 ### Pré-requisitos
 
-* Python (versão compatível — idealmente 3.7+)
+* Python (versão compatível — idealmente 3.8+)
 * Conta na Gameflip e acesso à API (chave + segredo)
 * Variáveis de ambiente configuradas:
 
@@ -48,7 +48,7 @@ print("Listing results:")
 listing_response = GameflipAPI.listing_search(digital=True, limit=1)
 pprint(listing_response.json())
 
-gameflip_api = GameflipAPI(os.getenv('key_api'), os.getenv('secret'))
+gameflip_api = GameflipAPI(os.getenv('GFAPI_KEY'), os.getenv('GFAPI_SECRET'))
 
 print("My profile info:")
 
@@ -61,7 +61,6 @@ pprint(gameflip_api.profile().json())
 * `example.py` — script de demonstração de uso
 * `test.py` — arquivo para testes rápidos
 * `requirements.txt` — dependências do Python
-* `setup.py` — para empacotamento/distribuição
 
 ## 🤝 Contato
 

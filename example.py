@@ -10,7 +10,7 @@ print("Listing results:")
 listing_response = GameflipAPI.listing_search(digital=True, limit=1)
 pprint(listing_response.json())
 
-gameflip_api = GameflipAPI(os.getenv('key_api'), os.getenv('secret'))
+gameflip_api = GameflipAPI(os.getenv('GFAPI_KEY'), os.getenv('GFAPI_SECRET'))
 
 print("My profile info:")
 
