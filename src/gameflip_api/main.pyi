@@ -78,7 +78,8 @@ class GameflipAPI:
         expiration: typing.Optional[DatetimeRange] = None,
         seller_online_until: typing.Optional[datetime.datetime] = None,
         tags: typing.Optional[str] = None,
-        start: typing.Optional[int] = None
+        start: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None
     ) -> requests.Response:
         """
         Makes a get to /api/v1/listing
@@ -103,6 +104,7 @@ class GameflipAPI:
                 Precedence is given to OR operations over AND so that a filter like tags=a,b^c^d,e will match all
                 listings that have (a OR b) AND (c) AND (d OR e).
         ::param start: Gets listing by page number
+        ::param limit: Limit the number of listings returned
         ::raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type
         ::raise TypeError: params is not ListingPostParams neither None
         ::return requests.Response: Returns a response object
@@ -134,6 +136,7 @@ class GameflipAPI:
         seller_online_until: typing.Optional[datetime.datetime] = None,
         tags: typing.Optional[str] = None,
         start: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None
     ) -> requests.Response:
         """
         Makes a get to /api/v1/listing
@@ -158,6 +161,7 @@ class GameflipAPI:
                 Precedence is given to OR operations over AND so that a filter like tags=a,b^c^d,e will match all
                 listings that have (a OR b) AND (c) AND (d OR e).
         ::param start: Gets listing by page number
+        ::param limit: Limit the number of listings returned
         ::raise pydantic.error_wrappers.ValidationError: If some parameter is not correct type
         ::raise TypeError: params is not ListingPostParams neither None
         ::return requests.Response: Returns a response object

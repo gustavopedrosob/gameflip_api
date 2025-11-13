@@ -7,6 +7,7 @@ from pydantic_core.core_schema import ValidationInfo
 
 from gameflip_api.enums import Category, Platform, UPC, ShippingPaidBy, ListingStatus, AcceptCurrency, Visibility, \
     ListingOps
+from gameflip_api.types import AwsCognitoUUID, Price
 
 T = typing.TypeVar("T")
 
@@ -29,13 +30,8 @@ class IntRange(Range[int]):
     pass
 
 
-class PriceRange(Range[int]):
-    @field_validator("start", "end")
-    @classmethod
-    def must_be_greater_or_equal_to_75(cls, v):
-        if v < 75:
-            raise ValueError("start and end must be greater or equal to 75.")
-        return v
+class PriceRange(Range[Price]):
+    pass
 
 
 class DatetimeRange(Range[datetime.datetime]):
@@ -66,6 +62,7 @@ class ListingSearchParams(BaseModel):
     seller_online_until: typing.Optional[DatetimeRange] = None
     tags: typing.Optional[str] = None
     start: typing.Optional[int] = None
+    limit: typing.Optional[int] = None
 
     def model_dump(self, *args, **kwargs):
         d = super().model_dump(*args, **kwargs)
@@ -78,7 +75,7 @@ class ListingSearchParams(BaseModel):
 class ListingPostParams(BaseModel):
     name: typing.Optional[str] = None
     description: typing.Optional[str] = None
-    price: typing.Optional[int] = Field(None, gt=74, description="Price of item")
+    price: typing.Optional[Price] = None
     category: typing.Optional[Category] = None
     upc: typing.Optional[UPC] = None
     accept_currency: AcceptCurrency = AcceptCurrency.USD
@@ -93,6 +90,10 @@ class GameflipAPIParams(BaseModel):
 
 class UUIDParam(BaseModel):
     uuid: UUID
+
+
+class OwnerParam(BaseModel):
+    owner: AwsCognitoUUID
 
 
 class Op(BaseModel):
