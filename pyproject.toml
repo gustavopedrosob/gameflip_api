@@ -4,9 +4,10 @@ version = "1.0.0"
 description = ""
 authors = [{ name="Gustavo Pedroso Bernardes", email="gpedrosobernardes@gmail.com" }]
 requires-python = ">=3.8"
+dependencies = ["validators", "pydantic", "pyotp", "requests"]
 
 [build-system]
-requires = ["setuptools", "wheel", "validators", "pydantic", "pyotp", "requests"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pydantic-pycharm-plugin.parsable-types]
