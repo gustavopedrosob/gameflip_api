@@ -28,7 +28,7 @@ Facilita a integração via script, para automatizar operações, consultar dado
 ### Instalação
 
 ```bash
-pip install gameflip_api
+pip install gameflip-api
 ```
 
 ### Uso básico
