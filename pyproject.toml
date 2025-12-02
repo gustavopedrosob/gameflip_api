@@ -1,6 +1,6 @@
 [project]
 name = "gameflip-api"
-version = "1.0.0"
+version = "1.0.1"
 description = "Uma API wrapper em Python para utilização com a plataforma Gameflip."
 authors = [{ name="Gustavo Pedroso Bernardes", email="gpedrosobernardes@gmail.com" }]
 readme = "README.md"
