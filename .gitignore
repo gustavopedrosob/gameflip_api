@@ -5,3 +5,4 @@ package-lock.json
 .idea
 __pycache__
 .env
+*egg-info
