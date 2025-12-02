@@ -1,7 +1,7 @@
 import os
 from pprint import pprint
 from dotenv import load_dotenv
-from gameflip_api import GameflipAPI
+from gameflip_api.api import GameflipAPI
 
 load_dotenv()
 
