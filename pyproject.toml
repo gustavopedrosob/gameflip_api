@@ -1,11 +1,16 @@
 [project]
 name = "gameflip-api"
-version = "1.0.1"
+version = "1.0.2"
 description = "Uma API wrapper em Python para utilização com a plataforma Gameflip."
 authors = [{ name="Gustavo Pedroso Bernardes", email="gpedrosobernardes@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = ["validators", "pydantic", "pyotp", "requests"]
+
+[project.urls]
+Homepage = "https://github.com/gpedrosobernardes/gameflip_api"
+Source = "https://github.com/gpedrosobernardes/gameflip_api"
+Issues = "https://github.com/gpedrosobernardes/gameflip_api/issues"
 
 [build-system]
 requires = ["setuptools", "wheel"]
